@@ -3,6 +3,7 @@ Take screenshots of websites automatically and import them to DaVinci Resolve!
 
 This captures the complete website in its full resolution, as it would appear in your web browser.
 
+![WebsiteScreenshotter](https://github.com/neezr/Website-Screenshotter-for-DaVinci-Resolve/assets/145998491/e76c2018-7aa8-4063-97af-6b8a76a7b5fd)
 
 
 ## Usage:
