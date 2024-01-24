@@ -16,6 +16,7 @@
 import time
 import os
 import re
+import platform
 from tkinter import *
 from tkinter import filedialog
 
@@ -32,7 +33,7 @@ except ModuleNotFoundError:
     root_errormsg.mainloop()
 
 
-STANDARD_FILE_LOCATION = os.path.expandvars(r"%APPDATA%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility\Website Screenshotter".replace("\\", os.sep))
+STANDARD_FILE_LOCATION = {"Windows":os.path.expandvars(r"%APPDATA%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility\Website Screenshotter"),"Darwin":r"/Library/Application Support/Blackmagic Design/Fusion/Scripts/Utility/Website Screenshotter","Linux":r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter"}.get(platform.system(), r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter")
 
 filelocation = STANDARD_FILE_LOCATION
 
@@ -162,5 +163,3 @@ l_stdbrowser_button = Button(root, text="Chrome", padx=50, command=gui_change_de
 l_stdbrowser_button.grid(row=7,column=0, sticky="W", padx=20)
 
 root.mainloop()
-
-
