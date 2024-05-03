@@ -10,8 +10,8 @@
 #Install:
 # Copy this .py-file into the folder "%appdata%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility"
 # Install the python module 'selenium'
-#	open cmd and execute 'pip install selenium' in the command line
-#	or: install via requirements.txt with 'pip install -r requirements.txt'
+#    open cmd and execute 'pip install selenium' in the command line
+#    or: install via requirements.txt with 'pip install -r requirements.txt'
 
 import time
 import os
@@ -19,6 +19,7 @@ import re
 import platform
 from tkinter import *
 from tkinter import filedialog
+from collections import Counter
 
 try:
     from selenium import webdriver
@@ -33,9 +34,29 @@ except ModuleNotFoundError:
     root_errormsg.mainloop()
 
 
-STANDARD_FILE_LOCATION = {"Windows":os.path.expandvars(r"%APPDATA%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility\Website Screenshotter"),"Darwin":r"/Library/Application Support/Blackmagic Design/Fusion/Scripts/Utility/Website Screenshotter","Linux":r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter"}.get(platform.system(), r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter")
+def guess_project_folder():
+    mp = resolve.GetProjectManager().GetCurrentProject().GetMediaPool()
+    filepaths = []
+    for mp_item in mp.GetRootFolder().GetClipList():
+        try:
+            dir_path = os.path.dirname(mp_item.GetClipProperty("File Path"))
+            filepaths.append(dir_path)
+        except KeyError:
+            pass
+    
+    while "" in filepaths:
+        filepaths.remove("")
+    
+    if not filepaths:
+        return None
+    else:
+        return Counter(filepaths).most_common(1)[0][0]
+
+
+STANDARD_FILE_LOCATION = guess_project_folder() or {"Windows":os.path.expandvars(r"%APPDATA%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility\Website Screenshotter"),"Darwin":r"/Library/Application Support/Blackmagic Design/Fusion/Scripts/Utility/Website Screenshotter","Linux":r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter"}.get(platform.system(), r"/opt/resolve/Fusion/Scripts/Utility/Website Screenshotter")
 
 filelocation = STANDARD_FILE_LOCATION
+
 
 def screenshot_website(url, output_path, browser_name="chrome"):
     driver = get_browser_driver(browser_name)
